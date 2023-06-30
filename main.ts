@@ -12,21 +12,21 @@ globalThis.Buffer = Buffer;
 // @ts-ignore: グローバル変数にブチ込む必要があるため
 globalThis.process = process;
 
-const generateQrcode = async (url: string) => {
-  const qr = await Qrcode.toBuffer(url);
+const generateQrcode = async (url: string, options: Qrcode.QRCodeToBufferOptions) => {
+  const qr = await Qrcode.toBuffer(url, options);
   return qr;
 };
 
 const app = new Hono();
 
 app.get("/", async (ctx) => {
-  const { url } = ctx.req.query();
+  const { url, width } = ctx.req.query();
   if (!url) {
     throw new HTTPException(Status.BadRequest, {
       message: "クエリパラメータに`url`を設定してください",
     });
   }
-  const qrcode = await generateQrcode(url);
+  const qrcode = await generateQrcode(url, {width: Number(width)});
   return ctx.body(qrcode, Status.OK, {
     "Content-Type": contentType("png"),
   });
