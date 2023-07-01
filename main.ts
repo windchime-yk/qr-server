@@ -12,6 +12,16 @@ globalThis.Buffer = Buffer;
 // @ts-ignore: グローバル変数にブチ込む必要があるため
 globalThis.process = process;
 
+const app = new Hono();
+
+app.get("/", (ctx) => {
+  return ctx.text(
+    "このサービスはDeno Deployでホスティングされ、Honoとnode-qrcodeによって構築されています。",
+  );
+});
+
+type Extention = "png" | "svg";
+
 const generateQrcode = async (
   url: string,
   options: Qrcode.QRCodeToBufferOptions | Qrcode.QRCodeToStringOptions,
@@ -23,11 +33,7 @@ const generateQrcode = async (
   });
 };
 
-const app = new Hono();
-
-type Extention = "png" | "svg";
-
-app.get("/", async (ctx) => {
+app.get("/api", async (ctx) => {
   const { type = "png", url, width } = ctx.req.query();
   const extention = type as Extention;
   if (!url) {
