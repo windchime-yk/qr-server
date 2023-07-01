@@ -34,17 +34,30 @@ const generateQrcode = async (
 };
 
 app.get("/api", async (ctx) => {
-  const { type = "png", url, width } = ctx.req.query();
+  const {
+    type = "png",
+    url,
+    width,
+    qrcolor = "000000ff",
+    bgcolor = "ffffffff",
+  } = ctx.req.query();
   const extention = type as Extention;
+
   if (!url) {
     throw new HTTPException(Status.BadRequest, {
       message: "クエリパラメータに`url`を設定してください",
     });
   }
+
   const qrcode = await generateQrcode(url, {
     type: extention,
     width: Number(width),
+    color: {
+      dark: `#${qrcolor}`,
+      light: `#${bgcolor}`,
+    },
   });
+
   return ctx.body(qrcode, Status.OK, {
     "Content-Type": contentType(extention),
   });
