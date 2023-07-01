@@ -12,23 +12,35 @@ globalThis.Buffer = Buffer;
 // @ts-ignore: グローバル変数にブチ込む必要があるため
 globalThis.process = process;
 
-const generateQrcode = async (url: string, options: Qrcode.QRCodeToBufferOptions) => {
-  const qr = await Qrcode.toBuffer(url, options);
-  return qr;
+const generateQrcode = async (
+  url: string,
+  options: Qrcode.QRCodeToBufferOptions | Qrcode.QRCodeToStringOptions,
+) => {
+  if (options.type === "png") return await Qrcode.toBuffer(url, options);
+  else if (options.type === "svg") return await Qrcode.toString(url, options);
+  throw new HTTPException(Status.BadRequest, {
+    message: "`type`でpngかsvgを設定してください",
+  });
 };
 
 const app = new Hono();
 
+type Extention = "png" | "svg";
+
 app.get("/", async (ctx) => {
-  const { url, width } = ctx.req.query();
+  const { type = "png", url, width } = ctx.req.query();
+  const extention = type as Extention;
   if (!url) {
     throw new HTTPException(Status.BadRequest, {
       message: "クエリパラメータに`url`を設定してください",
     });
   }
-  const qrcode = await generateQrcode(url, {width: Number(width)});
+  const qrcode = await generateQrcode(url, {
+    type: extention,
+    width: Number(width),
+  });
   return ctx.body(qrcode, Status.OK, {
-    "Content-Type": contentType("png"),
+    "Content-Type": contentType(extention),
   });
 });
 
