@@ -6,7 +6,7 @@
   "imports": {
     "std/": "https://deno.land/std@0.175.0/",
     "hono/": "https://deno.land/x/hono@v3.2.7/",
-    "qrcode": "https://esm.sh/v126/qrcode@1.5.3/node/qrcode.mjs"
+    "qrcode": "npm:qrcode@1.5.3"
   },
   "fmt": {
     "exclude": ["README.md"]
