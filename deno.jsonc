@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "dev": "deno run --allow-net=0.0.0.0:8080 --watch main.ts"
+    "dev": "deno run -N=0.0.0.0:8080 --watch main.ts"
   },
   "imports": {
     "@hono/hono": "jsr:@hono/hono@^4.7.4",
