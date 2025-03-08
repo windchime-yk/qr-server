@@ -2,11 +2,11 @@
   "tasks": {
     "dev": "deno run --allow-net=0.0.0.0:8080 --watch main.ts"
   },
-  "lock": false,
   "imports": {
-    "std/": "https://deno.land/std@0.175.0/",
-    "hono/": "https://deno.land/x/hono@v3.2.7/",
-    "qrcode": "npm:qrcode@1.5.3"
+    "@hono/hono": "jsr:@hono/hono@^4.7.4",
+    "@std/http": "jsr:@std/http@^1.0.13",
+    "@std/media-types": "jsr:@std/media-types@^1.1.0",
+    "qrcode": "npm:qrcode@^1.5.4"
   },
   "fmt": {
     "exclude": ["README.md"]

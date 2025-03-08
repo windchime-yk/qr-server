@@ -1,7 +1,7 @@
-import { Hono, HTTPException } from "hono/mod.ts";
-import { contentType } from "std/media_types/mod.ts";
-import { Status } from "std/http/http_status.ts";
-import { serve } from "std/http/mod.ts";
+import { Hono } from "@hono/hono";
+import { HTTPException } from "@hono/hono/http-exception";
+import { contentType } from "@std/media-types";
+import { STATUS_CODE } from "@std/http/status";
 import Qrcode from "qrcode";
 
 const app = new Hono();
@@ -20,7 +20,7 @@ const generateQrcode = async (
 ) => {
   if (options.type === "png") return await Qrcode.toBuffer(url, options);
   else if (options.type === "svg") return await Qrcode.toString(url, options);
-  throw new HTTPException(Status.BadRequest, {
+  throw new HTTPException(STATUS_CODE.BadRequest, {
     message: "`type`でpngかsvgを設定してください",
   });
 };
@@ -36,7 +36,7 @@ app.get("/api", async (ctx) => {
   const extention = type as Extention;
 
   if (!url) {
-    throw new HTTPException(Status.BadRequest, {
+    throw new HTTPException(STATUS_CODE.BadRequest, {
       message: "クエリパラメータに`url`を設定してください",
     });
   }
@@ -50,13 +50,13 @@ app.get("/api", async (ctx) => {
     },
   });
 
-  return ctx.body(qrcode, Status.OK, {
+  return ctx.body(qrcode, STATUS_CODE.OK, {
     "Content-Type": contentType(extention),
   });
 });
 
 app.all("*", () => {
-  throw new HTTPException(Status.NotFound, {
+  throw new HTTPException(STATUS_CODE.NotFound, {
     message: "お探しのページは存在しません",
   });
 });
@@ -74,11 +74,11 @@ app.onError((err, ctx) => {
 
   return ctx.json(
     {
-      status: Status.InternalServerError,
+      status: STATUS_CODE.InternalServerError,
       message: "不明なエラーが発生しました",
     },
-    Status.InternalServerError,
+    STATUS_CODE.InternalServerError,
   );
 });
 
-serve(app.fetch, { port: 8080 });
+Deno.serve({ port: 8080 }, app.fetch);
