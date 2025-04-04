@@ -3,7 +3,7 @@
     "dev": "deno run -N=0.0.0.0:8080 --watch main.ts"
   },
   "imports": {
-    "@hono/hono": "jsr:@hono/hono@^4.7.4",
+    "@hono/hono": "jsr:@hono/hono@^4.7.5",
     "@std/http": "jsr:@std/http@^1.0.13",
     "@std/media-types": "jsr:@std/media-types@^1.1.0",
     "qrcode": "npm:qrcode@^1.5.4"
